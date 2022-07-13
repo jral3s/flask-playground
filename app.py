@@ -1,7 +1,6 @@
 import pickle
 import numpy as np
-from requests import Response
-from flask import Flask, request
+from flask import Flask, Response, request
 
 app = Flask(__name__)
 
@@ -24,10 +23,15 @@ def hello_name(name):
 
 @app.route('/image', methods=['POST'])
 def image():
-    array = np.frombuffer(bytes(request.form["array"], 'utf-8'), dtype=np.uint8)
+    array = np.frombuffer(bytes(request.form["array"], 'utf-8'), dtype=np.uint8).copy()
     dims = pickle.loads(bytes(request.form["dims"], 'utf-8'))
+
     print(array.reshape(dims), dims)
-    return np.ones((100, 100, 3), dtype=np.uint8).tobytes()
+    array[0] = 0
+
+    data = pickle.dumps({"array": array, "dims": dims}, 0)
+
+    return Response(data)
 
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)

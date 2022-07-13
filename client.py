@@ -10,11 +10,12 @@ def send_image(image: np.ndarray, url: str) -> None:
     """
     image_msg = image.tobytes()
     url += "image"
-    data = {"array": image_msg, "dims": pickle.dumps(image.shape, 0)}
+    data = {"array": image_msg, "dims": pickle.dumps(image.shape, 0)} # 0 encodes it in ascii, ensuring we can decode with just utf-8
     r = requests.post(url, data=data)
 
-    print(r.content)
-    print(np.frombuffer(bytes(r.content), dtype=np.uint8))
+    response = pickle.loads(r.content)
+    print(response)
+    # print(np.frombuffer(bytes(r.content["array"]), dtype=np.uint8))
 
 def check_hello(url: str):
     """
