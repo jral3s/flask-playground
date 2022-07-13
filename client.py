@@ -1,6 +1,7 @@
 from time import time, sleep
 import requests
 import numpy as np
+import pickle
 
 
 def send_image(image: np.ndarray, url: str) -> None:
@@ -9,8 +10,9 @@ def send_image(image: np.ndarray, url: str) -> None:
     """
     image_msg = image.tobytes()
     url += "image"
-    data = {"message": image_msg, "array": image_msg}
+    data = {"array": image_msg, "dims": pickle.dumps(image.shape, 0)}
     r = requests.post(url, data=data)
+
     print(r.content)
     print(np.frombuffer(bytes(r.content), dtype=np.uint8))
 
@@ -27,18 +29,21 @@ def main():
     Main function.
     """
     url = "http://127.0.0.1:5000/" # DON'T use 'localhost', adds a 1.5 second delay 
-    image = np.random.randint(0, 255, size=(100, 100, 3), dtype=np.uint8)
-    check_hello(url)
+    # check_hello(url)
+
+    image = np.ones((100, 100, 3), dtype=np.uint8)
+
     time_start = time()
     send_image(image, url)
     time_end = time()
     print("Time: {}".format(time_end - time_start))
+
     return time_end - time_start
 
 
 if __name__ == "__main__":
     diffs = []
-    print(main())
+    main()
     # for i in range(50):
     #     diffs.append(main())
     #     sleep(0.1)
