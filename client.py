@@ -11,6 +11,7 @@ def send_image(image: np.ndarray, url: str) -> None:
     image_msg = image.tobytes()
     url += "image"
     data = {"array": image_msg, "dims": pickle.dumps(image.shape, 0)} # 0 encodes it in ascii, ensuring we can decode with just utf-8
+    data = pickle.dumps({"array": image, "dims": image.shape}, 0) # 0 encodes it in ascii, ensuring we can decode with just utf-8
     r = requests.post(url, data=data)
 
     response = pickle.loads(r.content)

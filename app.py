@@ -23,8 +23,11 @@ def hello_name(name):
 
 @app.route('/image', methods=['POST'])
 def image():
-    array = np.frombuffer(bytes(request.form["array"], 'utf-8'), dtype=np.uint8).copy()
-    dims = pickle.loads(bytes(request.form["dims"], 'utf-8'))
+    # array = np.frombuffer(bytes(request.form["array"], 'utf-8'), dtype=np.uint8).copy()
+    # dims = pickle.loads(bytes(request.form["dims"], 'utf-8'))
+    req = pickle.loads(request.get_data())
+    array = req["array"]
+    dims = req["dims"]
 
     print(array.reshape(dims), dims)
     array[0] = 0
