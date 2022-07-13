@@ -14,13 +14,21 @@ def send_image(image: np.ndarray, url: str) -> None:
     print(r.content)
     print(np.frombuffer(bytes(r.content), dtype=np.uint8))
 
+def check_hello(url: str):
+    """
+    Check if the server is running.
+    """
+    r = requests.get(url)
+    print(r.content)
+    return r.content == b"/ -> /hello -> /goodbye"
 
 def main():
     """
     Main function.
     """
-    url = "http://127.0.0.1:5000/"
+    url = "http://127.0.0.1:5000/" # DON'T use 'localhost', adds a 1.5 second delay 
     image = np.random.randint(0, 255, size=(100, 100, 3), dtype=np.uint8)
+    check_hello(url)
     time_start = time()
     send_image(image, url)
     time_end = time()
@@ -30,7 +38,7 @@ def main():
 
 if __name__ == "__main__":
     diffs = []
-    main()
+    print(main())
     # for i in range(50):
     #     diffs.append(main())
     #     sleep(0.1)

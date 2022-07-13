@@ -1,5 +1,5 @@
-from flask import Flask
-import requests
+from flask import Flask, request
+from requests import Response
 import numpy as np
 
 app = Flask(__name__)
@@ -23,8 +23,7 @@ def hello_name(name):
 
 @app.route('/image', methods=['POST'])
 def image():
-    # request_data = request.get_json()
-    # print(request)
+    print(np.frombuffer(bytes(request.form["array"], 'utf-8'), dtype=np.uint8))
     return np.ones((100, 100, 3), dtype=np.uint8).tobytes()
 
 if __name__ == "__main__":
